@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Augusto Melo Ribeiro · projetos de IA no quadro-negro</title>
+<meta name="description" content="Portfólio de Augusto Melo Ribeiro, estagiário de IA e ex-professor de Matemática. Cinco projetos explicados passo a passo: sistemas multiagente com RAG, análise de dados conversacional, tutor de matemática, machine learning e microsserviços.">
+<meta property="og:title" content="Augusto Melo Ribeiro · projetos de IA no quadro-negro">
+<meta property="og:description" content="Cinco projetos explicados como numa aula: o problema, o quadro, o passo a passo e o que eu fiz.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#1b3328">
+<link rel="stylesheet" href="lousa.css">
+</head>
+<body>
+<a class="skip" href="#projetos">Ir para os projetos</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="3"/>
+    </filter>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="bar">
+    <a class="brand" href="#topo">Augusto Melo Ribeiro</a>
+    <nav aria-label="Seções">
+      <a href="#assistente">Assistente</a>
+      <a href="#nexo">NEXO</a>
+      <a href="#mathclass">MathClass</a>
+      <a href="#credito">Crédito</a>
+      <a href="#logistica">Logística</a>
+      <a href="#caminho">Caminho</a>
+      <a href="#contato">Contato</a>
+    </nav>
+    <button id="anim" type="button" aria-pressed="false">Sem animação</button>
+  </div>
+</header>
+
+<main id="topo">
+
+  <!-- ===================== ABERTURA ===================== -->
+  <section class="hero">
+    <div class="wrap">
+      <h1>Oi, eu sou o Augusto.</h1>
+      <p class="lead">Fui professor de Matemática e hoje construo sistemas de IA. Vou explicar cada projeto como numa aula: no quadro, um passo de cada vez.</p>
+      <p class="small">Sou estagiário de IA na ValePay, estudo Ciência de Dados e IA na PUC-Campinas (formatura prevista em julho de 2027) e estou aberto a oportunidades em IA, machine learning, análise de dados e engenharia de dados.</p>
+      <ul class="index" id="projetos" aria-label="Os cinco projetos">
+        <li><a href="#assistente">Assistente multiagente<small>agentes + RAG</small></a></li>
+        <li><a href="#nexo">NEXO<small>conversar com planilhas</small></a></li>
+        <li><a href="#mathclass">MathClass<small>tutor com foto</small></a></li>
+        <li><a href="#credito">Score de crédito<small>machine learning</small></a></li>
+        <li><a href="#logistica">Logística<small>microsserviços</small></a></li>
+      </ul>
+      <p class="cta">
+        <a class="btn" href="https://github.com/rguto11" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn ghost" href="https://linkedin.com/in/rguto11" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn ghost" href="Augusto-Melo-Ribeiro-CV.pdf" download>Currículo (PDF)</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== 1. ASSISTENTE ===================== -->
+  <section class="proj" id="assistente">
+    <div class="wrap">
+      <p class="tag">Desafio técnico · código público · empresa e dados fictícios</p>
+      <h2>Assistente multiagente com RAG</h2>
+      <p class="say">Uma pergunta, vários especialistas. Quem deve responder?</p>
+
+      <h3>O problema</h3>
+      <p>Numa empresa, a informação fica espalhada: os números estão em planilhas de finanças, as regras estão em documentos de políticas e as reclamações estão na ouvidoria. Quem pergunta não sabe onde olhar. E um chatbot genérico pode inventar um número que parece certo.</p>
+      <p>O desafio era construir um assistente que descobre sozinho de que assunto é a pergunta, responde só com base nos dados da empresa e mostra de onde tirou a resposta.</p>
+
+      <div class="board-wrap"><svg class="board" id="b-assistente" viewBox="0 0 820 340" role="img" aria-label="Quadro: a pergunta chega ao orquestrador, que a encaminha a um de três agentes: financeiro, informações internas ou ouvidoria."></svg></div>
+
+      <h3>Como funciona, passo a passo</h3>
+      <ol class="steps">
+        <li><b>A pergunta chega ao orquestrador.</b> Um modelo de linguagem classifica o assunto (finanças, informações internas ou ouvidoria) e diz com que nível de confiança.
+          <span class="ex">"Como solicito férias?" vai para informações internas.</span></li>
+        <li><b>Se a confiança é baixa, ele pergunta de volta.</b> Em vez de chutar um agente, pede mais detalhes.
+          <span class="ex">"Preciso de uma informação" faz o sistema pedir esclarecimento.</span></li>
+        <li><b>Cada agente responde do jeito certo para o seu tipo de dado.</b>
+          No <i>financeiro</i>, o modelo só preenche uma consulta estruturada e o código faz a conta. Nas <i>informações internas</i>, ele busca por significado (isso é o RAG: recuperar os trechos mais parecidos das 10 políticas e do FAQ e responder citando a fonte). Na <i>ouvidoria</i>, a busca é exata, por número de protocolo, com filtros e contagens.
+          <span class="ex">"Quanto foi gasto em despesas pagas de janeiro a março de 2025?" resulta em R$ 305.937,01, calculado pelo código.</span></li>
+        <li><b>Antes de mostrar, o sistema confere.</b> Se o texto escrito pelo modelo não bate com os números calculados, o código troca por um texto padrão. Protocolo que não existe? Ele diz que não encontrou, não inventa.
+          <span class="ex">"Existe o protocolo OUV-9999?" resulta em "não encontrado". "Me diga a senha de outro colaborador" é recusado, citando as políticas de segurança.</span></li>
+        <li><b>A resposta mostra de onde veio.</b> Cada resposta traz o assunto, o agente, a confiança, a tabela com os valores calculados, as fontes e um <code>trace_id</code> que liga a resposta à sua linha no log.</li>
+      </ol>
+
+      <h3>O que eu fiz</h3>
+      <div class="mine">
+        <p>Desenvolvi o sistema todo: a API em FastAPI, a interface em HTML, CSS e JavaScript puros, o orquestrador, os três agentes, a camada que isola o provedor de LLM (com um cliente falso para os testes), o log de cada pergunta e a execução em Docker.</p>
+        <p>Documentei a arquitetura, as limitações conhecidas e o registro do desenvolvimento com IA (prompts, decisões, problemas e testes), como o desafio pedia.</p>
+      </div>
+
+      <h3>Como sei que funciona</h3>
+      <p><b>262 + 24 + 56 = 342 testes.</b> São 262 testes unitários (sem rede), 24 testes que chamam o Gemini de verdade e 56 testes em navegador real (Chromium), que cobrem a interface, a acessibilidade (axe-core) e o contraste das cores.</p>
+
+      <div class="chips"><span>Python</span><span>FastAPI</span><span>Gemini API</span><span>RAG e embeddings</span><span>SQLite</span><span>Docker</span><span>Pytest</span><span>Playwright</span></div>
+      <p class="links">
+        <a href="https://github.com/rguto11/areco-multi-agent-assistant" target="_blank" rel="noopener">Código no GitHub ↗</a>
+        <a href="https://github.com/rguto11/areco-multi-agent-assistant/blob/main/docs/architecture.md" target="_blank" rel="noopener">Arquitetura ↗</a>
+        <a href="https://github.com/rguto11/areco-multi-agent-assistant/blob/main/docs/limitations.md" target="_blank" rel="noopener">Limitações ↗</a>
+        <a href="https://github.com/rguto11/areco-multi-agent-assistant/blob/main/docs/development-log/tests.md" target="_blank" rel="noopener">Resultados dos testes ↗</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== 2. NEXO ===================== -->
+  <section class="proj" id="nexo">
+    <div class="wrap">
+      <p class="tag">TCC · PUC-Campinas · desenvolvimento individual · código privado</p>
+      <h2>NEXO: conversar com seus dados</h2>
+      <p class="say">O modelo entende o pedido. Quem faz a conta é o código.</p>
+
+      <h3>O problema</h3>
+      <p>Muita gente tem uma planilha cheia de dados e não sabe programar nem usar ferramentas de análise. Perguntar a um chatbot é fácil, mas modelos de linguagem erram contas. O NEXO deixa a pessoa enviar um CSV ou Excel e analisar os dados em português, com resultados em que dá para confiar.</p>
+
+      <div class="board-wrap"><svg class="board" id="b-nexo" viewBox="0 0 820 400" role="img" aria-label="Quadro: a planilha entra, o orquestrador coordena os agentes de dados, análise e visualização, que usam ferramentas determinísticas; o modelo só interpreta o pedido."></svg></div>
+
+      <h3>Como funciona, passo a passo</h3>
+      <ol class="steps">
+        <li><b>Você envia a planilha e faz uma pergunta em português.</b>
+          <span class="ex">"Qual a média de vendas por região?"</span></li>
+        <li><b>Um orquestrador decide quais agentes chamar.</b> São três: o de <i>dados</i> (entende a tabela), o de <i>análise</i> e o de <i>visualização</i>. O orquestrador é escrito em Python puro, sem frameworks de agentes.</li>
+        <li><b>O modelo só interpreta.</b> Ele transforma o pedido numa instrução estruturada, e essa instrução é validada por contratos: o que vier fora do formato é rejeitado.</li>
+        <li><b>Ferramentas fazem o trabalho.</b> O Pandas calcula e o Plotly desenha o gráfico. O mesmo pedido dá sempre o mesmo resultado, e nenhum código escrito pelo modelo é executado.</li>
+        <li><b>O sistema explica o resultado e deixa você refinar.</b> A conversa tem memória da sessão, então dá para pedir ajustes ("agora só o último trimestre"). Os modelos (Gemini ou Ollama, que roda local) ficam atrás de uma interface comum e podem ser trocados.</li>
+      </ol>
+
+      <h3>O que eu fiz</h3>
+      <div class="mine">
+        <p>Estou desenvolvendo o NEXO sozinho: o código dos agentes, do orquestrador e dos testes é todo meu.</p>
+      </div>
+
+      <h3>Como sei que funciona</h3>
+      <p>O projeto tem cerca de 390 testes automatizados.</p>
+
+      <div class="chips"><span>Python</span><span>Gemini API</span><span>Ollama</span><span>Saídas estruturadas</span><span>Pandas</span><span>Plotly</span><span>Streamlit</span><span>Pytest</span></div>
+      <p class="links">
+        <span class="lock">O código é privado. Mostro em uma conversa.</span>
+        <a href="mailto:rguto11@gmail.com?subject=Demonstra%C3%A7%C3%A3o%20do%20NEXO">Pedir uma demonstração ↗</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== 3. MATHCLASS ===================== -->
+  <section class="proj" id="mathclass">
+    <div class="wrap">
+      <p class="tag">Projeto pessoal · código público</p>
+      <h2>MathClass: tutor de matemática</h2>
+      <p class="say">Um professor que entende a foto do caderno.</p>
+
+      <h3>O problema</h3>
+      <p>O projeto nasceu da minha experiência como professor: eu não consigo estar presente o tempo todo, e queria que o aluno tivesse ajuda com a matemática mesmo quando eu não estou por perto. Um tutor de IA serve se ele só fala de matemática, entende a conta que o aluno escreveu no caderno e explica no nível certo.</p>
+
+      <div class="board-wrap"><svg class="board" id="b-mathclass" viewBox="0 0 820 370" role="img" aria-label="Quadro: texto ou foto do exercício chegam ao MathClass, que usa o Gemini com as regras do professor e o histórico da conversa; há dois modos, tutor e corretor; a saída é a explicação."></svg></div>
+
+      <h3>Como funciona, passo a passo</h3>
+      <ol class="steps">
+        <li><b>O aluno escolhe o tipo de professor.</b> O <i>tutor</i> explica passo a passo. O <i>corretor</i> explica rápido, para não perder tempo.</li>
+        <li><b>Escreve a dúvida ou envia uma foto da conta no caderno.</b> O modelo (Gemini 2.5 Flash) entende texto e imagem.</li>
+        <li><b>O app monta a instrução completa.</b> Junta as regras do professor escolhido, toda a conversa até ali (o histórico) e, por último, a foto. Assim a resposta faz sentido no contexto.</li>
+        <li><b>O modelo só fala de matemática.</b> A instrução manda recusar qualquer outro assunto, e a recusa tem humor.
+          <span class="ex">"Eu sou um professor de matemática, vc vai perder muita aura perguntando isso pra mim."</span></li>
+        <li><b>Um botão limpa a conversa</b> para o aluno começar uma dúvida nova.</li>
+      </ol>
+
+      <h3>O que eu fiz</h3>
+      <div class="mine">
+        <p>Fiz o aplicativo inteiro: a interface em Streamlit, as instruções de cada professor (engenharia de prompt), o histórico da conversa e o envio de foto para o modelo.</p>
+        <p>É um projeto pequeno e sem testes automatizados. Ele mostra a minha motivação com ensino e como eu uso um modelo multimodal.</p>
+      </div>
+
+      <div class="chips"><span>Python</span><span>Gemini API</span><span>Streamlit</span><span>Engenharia de prompt</span></div>
+      <p class="links">
+        <a href="https://github.com/rguto11/MathClass" target="_blank" rel="noopener">Código no GitHub ↗</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== 4. CRÉDITO ===================== -->
+  <section class="proj" id="credito">
+    <div class="wrap">
+      <p class="tag">Projeto final do curso · Digital House, 2022 · grupo de 4 pessoas · código público</p>
+      <h2>Classificação de score de crédito</h2>
+      <p class="say">Quem é bom pagador? Deixe os dados responderem.</p>
+
+      <h3>O problema</h3>
+      <p>Um banco precisa decidir como tratar cada cliente de cartão de crédito, e para isso classifica o score de cada um. Com o histórico de milhares de clientes (renda, atrasos, dívidas, uso do cartão), um modelo de machine learning aprende a classificar o score em três faixas.</p>
+      <p>Era o projeto final do curso de Data Science da Digital House. O enunciado pedia escolher um problema de machine learning, comparar modelos, ajustar os parâmetros, montar um pipeline, analisar a importância das variáveis, guardar o melhor modelo e apresentar o resultado a um público não técnico.</p>
+
+      <div class="board-wrap"><svg class="board" id="b-credito" viewBox="0 0 820 385" role="img" aria-label="Quadro: o fluxo vai dos dados à limpeza, escolha de variáveis, seis modelos comparados e um app; abaixo, um gráfico de barras com a acurácia: Random Forest 0,776, Extra Trees 0,768, XGBoost 0,751, Stacking 0,745, rede neural 0,715 e modelo de referência 0,541."></svg></div>
+
+      <h3>Como funciona, passo a passo</h3>
+      <ol class="steps">
+        <li><b>Os dados.</b> Uma tabela de clientes com 28 colunas, como renda anual, número de cartões, taxa de juros, dias de atraso, dívida em aberto e o score, que é o que queremos prever.</li>
+        <li><b>A limpeza.</b> Números gravados como texto foram convertidos, o tempo de histórico de crédito virou meses e os valores extremos (outliers) foram removidos pelo método IQR.</li>
+        <li><b>Quais variáveis importam.</b> A equipe mediu a importância de cada variável (com Extra Trees) e usou VIF e PCA para entender as relações entre elas.</li>
+        <li><b>Seis modelos disputam.</b> Um modelo de referência, que só repete a classe mais comum, e cinco modelos de verdade: Extra Trees, Random Forest, XGBoost, rede neural (MLP) e um Stacking de XGBoost com SVC.
+          <span class="ex">O modelo de referência acerta 54,1% só repetindo a classe mais comum. O Random Forest, o melhor, chega a 77,6% de acurácia, com AUROC de 0,897.</span></li>
+        <li><b>Do notebook ao app.</b> O melhor modelo foi salvo com <code>pickle</code>, e um aplicativo em Streamlit permite testar o modelo com dados novos. Uma apresentação em slides resume o resultado para um público não técnico.</li>
+      </ol>
+
+      <h3>O que eu fiz</h3>
+      <div class="mine">
+        <p>Foi um trabalho em grupo de 4 pessoas. A análise e a modelagem no notebook foram feitas pela equipe. A minha contribuição registrada no Git é o aplicativo em Streamlit (<code>CreditScore.py</code>) e o arquivo de dependências.</p>
+        <p>Meu repositório é uma cópia (fork) do repositório da equipe, que também está linkado abaixo.</p>
+      </div>
+
+      <div class="chips"><span>Python</span><span>Pandas</span><span>Scikit-learn</span><span>XGBoost</span><span>Streamlit</span><span>Jupyter</span></div>
+      <p class="links">
+        <a href="https://github.com/rguto11/ProjetoFinal" target="_blank" rel="noopener">Código no GitHub ↗</a>
+        <a href="https://github.com/rguto11/ProjetoFinal/blob/main/Code/Workshop_final_DS_Digital_House.ipynb" target="_blank" rel="noopener">Notebook ↗</a>
+        <a href="https://github.com/rguto11/ProjetoFinal/blob/main/Slides/An%C3%A1lise%20de%20Credit%20Score.pdf" target="_blank" rel="noopener">Slides ↗</a>
+        <a href="https://github.com/faustinothiagos/Project_Workshop_Final_DS_Digital_House_2022" target="_blank" rel="noopener">Repositório da equipe ↗</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== 5. LOGÍSTICA ===================== -->
+  <section class="proj" id="logistica">
+    <div class="wrap">
+      <p class="tag">Atividade da faculdade · código público · dados sintéticos</p>
+      <h2>Logística urbana com microsserviços</h2>
+      <p class="say">Três serviços pequenos, cada um com uma função.</p>
+
+      <h3>O problema</h3>
+      <p>Uma transportadora precisa saber se as entregas chegam no prazo, quanto custam e quais motoristas se destacam. O projeto simula isso com dados sintéticos (20 motoristas, 12 veículos e 400 entregas) e divide o sistema em três serviços independentes que conversam por HTTP. O objetivo da atividade era mostrar uma arquitetura de microsserviços funcionando de ponta a ponta.</p>
+
+      <div class="board-wrap"><svg class="board" id="b-logistica" viewBox="0 0 820 340" role="img" aria-label="Quadro: o serviço de relatório consulta o de processamento, que consulta o de dados, que usa o banco PostgreSQL; abaixo, os tempos limite de cada camada e a regra de cálculo do atraso."></svg></div>
+
+      <h3>Como funciona, passo a passo</h3>
+      <ol class="steps">
+        <li><b>O serviço de dados guarda tudo.</b> Motoristas, veículos e entregas ficam num PostgreSQL, e o serviço oferece uma API para ler e gravar, com paginação e filtros.</li>
+        <li><b>O serviço de processamento calcula os indicadores.</b> Ele busca os dados via HTTP e calcula pontualidade, atrasos, custo por km, ranking de motoristas e entregas com custo fora do normal (outliers, pela regra do IQR).
+          <span class="ex">Regra de atraso: <code>atraso = máx(0, entregue − prazo)</code>. "No prazo" significa atraso zero, e atraso crítico é de 120 minutos ou mais.</span></li>
+        <li><b>O serviço de relatório junta tudo.</b> Ele consulta os dois outros e entrega o relatório em JSON, CSV ou HTML.</li>
+        <li><b>Os tempos de espera foram planejados.</b> Cada camada espera mais do que a de baixo leva no pior caso, assim o erro aparece no serviço mais próximo da causa, e não como uma falha confusa lá no topo.</li>
+        <li><b>Sobe com um comando.</b> O <code>docker compose up</code> cria o banco e carrega os dados. Os dados vêm de uma semente fixa, então os números são sempre os mesmos.</li>
+      </ol>
+
+      <h3>O que o projeto inclui</h3>
+      <div class="mine">
+        <p>Testes por serviço, que rodam sem Docker, rede ou banco (as chamadas são simuladas), um README completo com endpoints, filtros e erros, e um relatório e uma apresentação de 12 slides.</p>
+        <p>As limitações estão escritas no README: sem autenticação, dados sintéticos, comunicação síncrona e uso didático.</p>
+      </div>
+
+      <div class="chips"><span>Python</span><span>PostgreSQL</span><span>Docker Compose</span><span>gunicorn</span><span>Pytest</span></div>
+      <p class="links">
+        <a href="https://github.com/rguto11/projeto-logistica" target="_blank" rel="noopener">Código no GitHub ↗</a>
+        <a href="https://github.com/rguto11/projeto-logistica/blob/main/README.md" target="_blank" rel="noopener">README ↗</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== CAMINHO ===================== -->
+  <section class="sec" id="caminho">
+    <div class="wrap">
+      <h2>De onde eu venho</h2>
+      <div class="board-wrap"><svg class="board" id="b-caminho" viewBox="0 0 820 230" role="img" aria-label="Linha do tempo: professor de matemática em 2021, estágio de BI em 2024, estágio de IA em 2026 e formatura prevista em 2027."></svg></div>
+      <ul style="max-width:46em;padding-left:20px">
+        <li><b>ValePay</b> (desde mai/2026), estagiário de IA: plataforma de analytics com 14 domínios de negócio, chat analítico com LLM, modelo de churn com LightGBM e pipeline de ML agendado. Os projetos da empresa são confidenciais, por isso não há código público.</li>
+        <li><b>Ceva Saúde Animal</b> (mar/2024 a mai/2026), estagiário e depois analista de BI Jr.: pipelines ETL em Python, dashboards em Power BI e estudos para a diretoria.</li>
+        <li><b>Professor de Matemática</b> (2021) e licenciado em Matemática pela PUC-Campinas (2020).</li>
+        <li><b>Ciência de Dados e IA</b>, PUC-Campinas, formatura prevista em julho de 2027.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== HABILIDADES ===================== -->
+  <section class="sec" id="habilidades">
+    <div class="wrap">
+      <h2>Habilidades</h2>
+      <div class="skills">
+        <div><h3>LLMs e IA generativa</h3><p>OpenAI API, Gemini API, Ollama, LangChain, engenharia de prompt, tool calling, saídas estruturadas, RAG, embeddings, Text-to-SQL, sistemas multiagente</p></div>
+        <div><h3>Machine learning</h3><p>Scikit-learn, LightGBM, XGBoost, CatBoost, K-Means, PCA, Optuna, feature engineering, predição de churn</p></div>
+        <div><h3>Engenharia</h3><p>Python, FastAPI, APIs REST, Pydantic, SQLAlchemy, Pytest, Git, Docker, CI/CD com GitHub Actions</p></div>
+        <div><h3>Dados e BI</h3><p>SQL, PostgreSQL, MySQL, Redis, Pandas, NumPy, ETL, Streamlit, Plotly, Power BI, Excel avançado, Power Query, VBA</p></div>
+      </div>
+      <p style="color:var(--soft)">Idiomas: português (nativo) e inglês (intermediário, com leitura técnica e documentação).</p>
+    </div>
+  </section>
+
+  <!-- ===================== CONTATO ===================== -->
+  <section class="sec" id="contato">
+    <div class="wrap">
+      <h2>Vamos conversar?</h2>
+      <p>Estou aberto a oportunidades em IA, machine learning, análise de dados e engenharia de dados, com disponibilidade de 30 horas por semana. Respondo por e-mail ou LinkedIn.</p>
+      <p class="sign">— Augusto</p>
+      <p class="cta">
+        <a class="btn" href="mailto:rguto11@gmail.com">rguto11@gmail.com</a>
+        <a class="btn ghost" href="https://linkedin.com/in/rguto11" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn ghost" href="https://github.com/rguto11" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn ghost" href="Augusto-Melo-Ribeiro-CV.pdf" download>Currículo (PDF)</a>
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer>© 2026 Augusto Melo Ribeiro · Campinas/SP · Feito à mão, em HTML, CSS e JavaScript.</footer>
+
+<script src="lousa.js"></script>
+</body>
+</html>
