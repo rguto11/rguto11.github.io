@@ -23,8 +23,6 @@ a:hover{text-decoration-thickness:2px}
 .top nav::-webkit-scrollbar{display:none}
 .top nav a{color:var(--soft);text-decoration:none;white-space:nowrap;padding:4px 2px}
 .top nav a:hover{color:var(--chalk)}
-#anim{font:inherit;font-size:13px;color:var(--soft);background:transparent;border:1.5px solid rgba(255,255,255,.28);border-radius:999px;padding:3px 12px;cursor:pointer;white-space:nowrap}
-#anim:hover{color:var(--chalk);border-color:var(--chalk)}
 @media(max-width:760px){.top nav{display:none}}
 
 /* ===== abertura ===== */

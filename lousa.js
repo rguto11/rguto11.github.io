@@ -119,15 +119,12 @@ if ('IntersectionObserver' in window){
   targets.forEach(t => io.observe(t));
 } else { targets.forEach(t => t.classList.add('in')); }
 
-/* ---------- botão "sem animação" ---------- */
-const btn = document.getElementById('anim');
+/* ---------- animação sempre ligada ----------
+   Única exceção automática: quem pede "reduzir movimento" no sistema vê os desenhos já prontos.
+   (?estatico serve só para tirar capturas de tela.) */
 const q = new URLSearchParams(location.search);
-function setStatic(on){
-  document.body.classList.toggle('static', on);
-  btn.setAttribute('aria-pressed', String(on));
-  btn.textContent = on ? 'Ligar animação' : 'Sem animação';
+if (matchMedia('(prefers-reduced-motion: reduce)').matches || q.has('estatico')){
+  document.body.classList.add('static');
+  targets.forEach(t => t.classList.add('in'));
 }
-btn.addEventListener('click', () => setStatic(!document.body.classList.contains('static')));
-setStatic(matchMedia('(prefers-reduced-motion: reduce)').matches || q.has('estatico'));
-if (q.has('estatico')) targets.forEach(t => t.classList.add('in'));
 })();
